@@ -1,4 +1,5 @@
 'use client';
+import Link from "next/link";
 
 import React, { useState, useEffect } from 'react';
 import { 
@@ -60,11 +61,11 @@ const SavingsEstimator = () => {
               <span className="text-xl font-bold text-gray-900">Renewz</span>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <a href="/" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
-                <Home className="h-4 w-4 mr-1" />
-                Home
-              </a>
-              <a href="#" className="text-emerald-600 font-medium">Savings Calculator</a>
+              <Link href="/" className="text-gray-600 hover:text-emerald-600 transition-colors flex items-center">
+  <Home className="h-4 w-4 mr-1" />
+  Home
+</Link>
+
             </nav>
           </div>
         </div>
