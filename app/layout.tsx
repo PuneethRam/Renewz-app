@@ -298,6 +298,18 @@ function NavContent() {
                     Explore Projects
                   </Link>
                   <Link
+                    href="/projects"
+                    onClick={closeMobileMenu}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      isActive('/calculator')
+                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
+                    Investment Calculator
+                  </Link>
+                  <Link
                     href="/about"
                     onClick={closeMobileMenu}
                     className={`block px-3 py-2 rounded-md text-base font-medium ${
