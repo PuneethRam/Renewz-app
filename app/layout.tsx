@@ -103,6 +103,18 @@ function NavContent() {
                     Explore Projects
                   </Link>
                   <Link
+                    href="/calculator"
+                    onClick={closeMobileMenu}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      isActive('/calculator')
+                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
+                    Investment Calculator
+                  </Link>
+                  <Link
                     href="/investments"
                     className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
                       isActive('/transactions')
@@ -138,6 +150,18 @@ function NavContent() {
                   >
                     <LucideTrendingUp className="w-4 h-4 inline mr-2" />
                     Explore Projects
+                  </Link>
+                  <Link
+                    href="/calculator"
+                    onClick={closeMobileMenu}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      isActive('/calculator')
+                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
+                    Investment Calculator
                   </Link>
                   <Link
                     href="/about"
@@ -258,6 +282,18 @@ function NavContent() {
                     Explore Projects
                   </Link>
                   <Link
+                    href="/calculator"
+                    onClick={closeMobileMenu}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      isActive('/calculator')
+                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
+                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
+                    }`}
+                  >
+                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
+                    Investment Calculator
+                  </Link>
+                  <Link
                     href="/investments"
                     onClick={closeMobileMenu}
                     className={`block px-3 py-2 rounded-md text-base font-medium ${
@@ -267,7 +303,7 @@ function NavContent() {
                     }`}
                   >
                     <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    My Investments
+                    My Transactions
                   </Link>
                 </>
               ) : (
@@ -298,7 +334,7 @@ function NavContent() {
                     Explore Projects
                   </Link>
                   <Link
-                    href="/projects"
+                    href="/calculator"
                     onClick={closeMobileMenu}
                     className={`block px-3 py-2 rounded-md text-base font-medium ${
                       isActive('/calculator')
