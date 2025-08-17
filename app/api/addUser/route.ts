@@ -11,8 +11,8 @@ export async function POST(req: Request) {
     connection = await createConnection();
 
     await connection.execute(
-      "INSERT INTO Users (firebase_uid, name, email) VALUES (?, ?, ?)",
-      [uid, name, email]
+      "INSERT INTO Users (id, firebase_uid, name, email) VALUES ( ?, ?, ?, ?)",
+      [uid, uid, name, email]
     );
 
     return NextResponse.json({ message: "User added to MySQL" }, { status: 200 });
