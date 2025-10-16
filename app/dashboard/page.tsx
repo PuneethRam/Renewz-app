@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Calendar, TrendingUp, Zap, DollarSign, MapPin, Eye} from 'lucide-react';
+import { Calendar, TrendingUp, Zap, DollarSign, MapPin, Eye, ArrowRight, Activity } from 'lucide-react';
 
 // Firebase imports using your existing AuthContext
 import { useAuth } from '@/context/AuthContext';
@@ -56,20 +56,17 @@ interface SubscriptionDetail extends Subscription {
 }
 
 const Dashboard = () => {
-  const { user } = useAuth(); // Use your existing AuthContext
+  const { user } = useAuth();
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [selectedSubscription, setSelectedSubscription] = useState<SubscriptionDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [detailLoading, setDetailLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch subscriptions when user changes
   useEffect(() => {
     if (user) {
-      // User is signed in, fetch their subscriptions
       fetchSubscriptions(user.uid);
     } else {
-      // User is signed out
       setSubscriptions([]);
       setLoading(false);
     }
@@ -115,11 +112,11 @@ const Dashboard = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'applied': return 'bg-yellow-100 text-yellow-800 border-yellow-300';
-      case 'approved': return 'bg-blue-100 text-blue-800 border-blue-300';
-      case 'active': return 'bg-green-100 text-green-800 border-green-300';
-      case 'over': return 'bg-gray-100 text-gray-800 border-gray-300';
-      default: return 'bg-gray-100 text-gray-800 border-gray-300';
+      case 'applied': return 'bg-amber-50 text-amber-700 border-amber-200';
+      case 'approved': return 'bg-blue-50 text-blue-700 border-blue-200';
+      case 'active': return 'bg-emerald-50 text-emerald-700 border-emerald-200';
+      case 'over': return 'bg-slate-50 text-slate-600 border-slate-200';
+      default: return 'bg-slate-50 text-slate-600 border-slate-200';
     }
   };
 
@@ -127,6 +124,7 @@ const Dashboard = () => {
     return new Intl.NumberFormat('en-IN', {
       style: 'currency',
       currency: 'INR',
+      maximumFractionDigits: 0,
     }).format(amount);
   };
 
@@ -140,26 +138,28 @@ const Dashboard = () => {
 
   const getProjectStatusColor = (status: string) => {
     switch (status) {
-      case 'upcoming': return 'bg-orange-100 text-orange-800';
-      case 'active': return 'bg-green-100 text-green-800';
-      case 'closed': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'upcoming': return 'bg-orange-500 text-white';
+      case 'active': return 'bg-emerald-500 text-white';
+      case 'closed': return 'bg-slate-500 text-white';
+      default: return 'bg-slate-400 text-white';
     }
   };
 
-  // Show sign-in prompt if user is not authenticated
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Card className="w-full max-w-md">
-          <CardHeader className="text-center">
-            <Zap className="h-12 w-12 text-yellow-600 mx-auto mb-4" />
-            <CardTitle>Solar Dashboard</CardTitle>
-            <CardDescription>Please sign in to view your solar subscriptions</CardDescription>
+      <div className="min-h-screen bg-gradient-to-br from-amber-50 via-white to-orange-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md shadow-xl border-0">
+          <CardHeader className="text-center pb-4">
+            <div className="w-16 h-16 bg-gradient-to-br from-amber-400 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <Zap className="h-8 w-8 text-white" />
+            </div>
+            <CardTitle className="text-2xl">Welcome Back</CardTitle>
+            <CardDescription className="text-base">Sign in to access your solar dashboard</CardDescription>
           </CardHeader>
-          <CardContent>
-            <Button className="w-full" onClick={() => window.location.href = '/signin'}>
-              Sign In
+          <CardContent className="pt-2">
+            <Button className="w-full h-11 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white font-medium shadow-md" onClick={() => window.location.href = '/signin'}>
+              Sign In to Continue
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </CardContent>
         </Card>
@@ -169,16 +169,27 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-6 lg:p-8">
         <div className="max-w-7xl mx-auto">
-          <div className="animate-pulse">
-            <div className="h-8 bg-gray-200 rounded w-64 mb-8"></div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="animate-pulse space-y-8">
+            <div className="h-10 bg-slate-200 rounded-lg w-64"></div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {[1, 2, 3, 4].map((i) => (
+                <div key={i} className="bg-white p-6 rounded-xl shadow-sm border border-slate-100">
+                  <div className="h-4 bg-slate-200 rounded w-24 mb-3"></div>
+                  <div className="h-8 bg-slate-200 rounded w-32"></div>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="bg-white p-6 rounded-lg shadow">
-                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
-                  <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                  <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+                <div key={i} className="bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden">
+                  <div className="h-48 bg-slate-200"></div>
+                  <div className="p-6 space-y-4">
+                    <div className="h-4 bg-slate-200 rounded w-3/4"></div>
+                    <div className="h-4 bg-slate-200 rounded w-1/2"></div>
+                    <div className="h-10 bg-slate-200 rounded"></div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -190,14 +201,17 @@ const Dashboard = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-        <Card className="w-full max-w-md">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 flex items-center justify-center">
+        <Card className="w-full max-w-md shadow-xl border-0">
           <CardHeader>
-            <CardTitle className="text-red-600">Error</CardTitle>
+            <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center mx-auto mb-3">
+              <Activity className="h-6 w-6 text-red-600" />
+            </div>
+            <CardTitle className="text-red-600 text-center">Something went wrong</CardTitle>
           </CardHeader>
-          <CardContent>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <Button onClick={() => fetchSubscriptions(user.uid)} className="w-full">
+          <CardContent className="space-y-4">
+            <p className="text-slate-600 text-center text-sm">{error}</p>
+            <Button onClick={() => fetchSubscriptions(user.uid)} className="w-full bg-slate-900 hover:bg-slate-800">
               Try Again
             </Button>
           </CardContent>
@@ -207,61 +221,78 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-       
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-50 p-4 md:p-6 lg:p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl md:text-4xl font-bold text-slate-900 mb-2">My Solar Portfolio</h1>
+            <p className="text-slate-600">Track your renewable energy investments</p>
+          </div>
+        </div>
+
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-gradient-to-br from-amber-500 to-orange-500 text-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Subscriptions</p>
-                  <p className="text-2xl font-bold text-gray-900">{subscriptions.length}</p>
+                  <p className="text-amber-100 text-sm font-medium mb-1">Total Subscriptions</p>
+                  <p className="text-4xl font-bold">{subscriptions.length}</p>
                 </div>
-                <Zap className="h-8 w-8 text-yellow-600" />
+                <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm">
+                  <Zap className="h-7 w-7" />
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Capacity</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {subscriptions.reduce((sum, sub) => sum + sub.subscribed_kw, 0).toFixed(1)} kW
+                  <p className="text-slate-600 text-sm font-medium mb-1">Total Capacity</p>
+                  <p className="text-3xl font-bold text-slate-900">
+                    {subscriptions.reduce((sum, sub) => sum + sub.subscribed_kw, 0).toFixed(1)}
+                    <span className="text-lg font-normal text-slate-600 ml-1">kW</span>
                   </p>
                 </div>
-                <TrendingUp className="h-8 w-8 text-green-600" />
+                <div className="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center">
+                  <TrendingUp className="h-7 w-7 text-emerald-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Active Projects</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-slate-600 text-sm font-medium mb-1">Active Projects</p>
+                  <p className="text-3xl font-bold text-slate-900">
                     {subscriptions.filter(sub => sub.status === 'active').length}
                   </p>
                 </div>
-                <Calendar className="h-8 w-8 text-blue-600" />
+                <div className="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center">
+                  <Calendar className="h-7 w-7 text-blue-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
           
-          <Card>
+          <Card className="border-0 shadow-md hover:shadow-lg transition-shadow bg-white">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Total Investment</p>
-                  <p className="text-2xl font-bold text-gray-900">
+                  <p className="text-slate-600 text-sm font-medium mb-1">Total Investment</p>
+                  <p className="text-2xl font-bold text-slate-900">
                     {formatCurrency(subscriptions.reduce((sum, sub) => sum + sub.amount_paid, 0))}
                   </p>
                 </div>
-                <DollarSign className="h-8 w-8 text-purple-600" />
+                <div className="w-14 h-14 bg-purple-50 rounded-2xl flex items-center justify-center">
+                  <DollarSign className="h-7 w-7 text-purple-600" />
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -269,184 +300,191 @@ const Dashboard = () => {
 
         {/* Subscriptions List */}
         {subscriptions.length === 0 ? (
-          <Card>
+          <Card className="border-0 shadow-md">
             <CardContent className="p-12 text-center">
-              <Zap className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">No Subscriptions Yet</h3>
-              <p className="text-gray-600 mb-6">Start your solar journey by subscribing to your first project</p>
-              <Button>Browse Projects</Button>
+              <div className="w-20 h-20 bg-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
+                <Zap className="h-10 w-10 text-slate-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-slate-900 mb-3">No Subscriptions Yet</h3>
+              <p className="text-slate-600 mb-8 max-w-md mx-auto">Start your renewable energy journey by subscribing to your first solar project</p>
+              <Button className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white h-11 px-8 shadow-md">
+                Browse Projects
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
             </CardContent>
           </Card>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {subscriptions.map((subscription) => (
-              <Card key={subscription.id} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video bg-gradient-to-br from-yellow-400 to-orange-500 relative">
-                  {subscription.project.banner_url ? (
-                    <img 
-                      src={subscription.project.banner_url} 
-                      alt={subscription.project.title}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-full">
-                      <Zap className="h-12 w-12 text-white" />
+          <div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-semibold text-slate-900">Your Subscriptions</h2>
+              <span className="text-sm text-slate-600">{subscriptions.length} {subscriptions.length === 1 ? 'project' : 'projects'}</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+              {subscriptions.map((subscription) => (
+                <Card key={subscription.id} className="border-0 shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
+                  <div className="aspect-video bg-gradient-to-br from-amber-400 to-orange-500 relative overflow-hidden">
+                    {subscription.project.banner_url ? (
+                      <img 
+                        src={subscription.project.banner_url} 
+                        alt={subscription.project.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center h-full">
+                        <Zap className="h-16 w-16 text-white/80" />
+                      </div>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0"></div>
+                    <div className="absolute top-3 right-3">
+                      <Badge className={`${getProjectStatusColor(subscription.project.status)} border-0 shadow-lg backdrop-blur-sm`}>
+                        {subscription.project.status}
+                      </Badge>
                     </div>
-                  )}
-                  <div className="absolute top-3 right-3">
-                    <Badge className={getProjectStatusColor(subscription.project.status)}>
-                      {subscription.project.status}
-                    </Badge>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="text-white font-semibold text-lg line-clamp-1 drop-shadow-md">
+                        {subscription.project.title}
+                      </h3>
+                    </div>
                   </div>
-                </div>
-                
-                <CardContent className="p-6">
-                  <div className="mb-4">
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                      {subscription.project.title}
-                    </h3>
-                    <div className="flex items-center text-sm text-gray-600 mb-2">
-                      <MapPin className="h-4 w-4 mr-1" />
-                      {subscription.project.location}
-                    </div>
-                    <div className="flex items-center justify-between text-sm">
-                      <span className="text-gray-600">Subscribed: {subscription.subscribed_kw} kW</span>
-                      <Badge className={getStatusColor(subscription.status)}>
+                  
+                  <CardContent className="p-5 space-y-4">
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-center text-sm text-slate-600">
+                        <MapPin className="h-4 w-4 mr-1.5 text-slate-400" />
+                        <span className="line-clamp-1">{subscription.project.location}</span>
+                      </div>
+                      <Badge className={`${getStatusColor(subscription.status)} border text-xs`}>
                         {subscription.status}
                       </Badge>
                     </div>
-                  </div>
-                  
-                  <div className="space-y-2 mb-4">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Investment:</span>
-                      <span className="font-medium">{formatCurrency(subscription.amount_paid)}</span>
+                    
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-slate-50 rounded-lg p-3">
+                        <p className="text-xs text-slate-600 mb-1">Capacity</p>
+                        <p className="font-semibold text-slate-900">{subscription.subscribed_kw} kW</p>
+                      </div>
+                      <div className="bg-slate-50 rounded-lg p-3">
+                        <p className="text-xs text-slate-600 mb-1">Investment</p>
+                        <p className="font-semibold text-slate-900 text-sm">{formatCurrency(subscription.amount_paid)}</p>
+                      </div>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Rate per unit:</span>
-                      <span className="font-medium">₹{subscription.project.rate_per_unit_investor}/kWh</span>
+                    
+                    <div className="flex items-center justify-between text-xs pt-2 border-t border-slate-100">
+                      <span className="text-slate-600">Rate: ₹{subscription.project.rate_per_unit_investor}/kWh</span>
+                      <span className="text-slate-600">{formatDate(subscription.start_date)}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Start Date:</span>
-                      <span className="font-medium">{formatDate(subscription.start_date)}</span>
-                    </div>
-                  </div>
-                  
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button 
-                        className="w-full" 
-                        onClick={() => fetchSubscriptionDetails(subscription.id)}
-                      >
-                        <Eye className="h-4 w-4 mr-2" />
-                        View Details
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
-                      <DialogHeader>
-                        <DialogTitle>{subscription.project.title} - Subscription Details</DialogTitle>
-                        <DialogDescription>
-                          Detailed view of your subscription performance and payouts
-                        </DialogDescription>
-                      </DialogHeader>
-                      
-                      {detailLoading ? (
-                        <div className="p-8">
-                          <div className="animate-pulse space-y-4">
-                            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
-                            <div className="h-32 bg-gray-200 rounded"></div>
-                            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
-                          </div>
-                        </div>
-                      ) : selectedSubscription ? (
-                        <div className="space-y-6">
-                          {/* Key Metrics */}
-                          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                            <Card>
-                              <CardContent className="p-4">
-                                <div className="text-center">
-                                  <p className="text-sm text-gray-600">Subscribed Capacity</p>
-                                  <p className="text-lg font-bold">{selectedSubscription.subscribed_kw} kW</p>
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card>
-                              <CardContent className="p-4">
-                                <div className="text-center">
-                                  <p className="text-sm text-gray-600">Avg Monthly Generation</p>
-                                  <p className="text-lg font-bold">{selectedSubscription.avgMonthlyGeneration.toFixed(1)} kWh</p>
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card>
-                              <CardContent className="p-4">
-                                <div className="text-center">
-                                  <p className="text-sm text-gray-600">Avg Monthly Payout</p>
-                                  <p className="text-lg font-bold">{formatCurrency(selectedSubscription.avgMonthlyPayout)}</p>
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card>
-                              <CardContent className="p-4">
-                                <div className="text-center">
-                                  <p className="text-sm text-gray-600">Last Month Payout</p>
-                                  <p className="text-lg font-bold">{formatCurrency(selectedSubscription.lastMonthPayout)}</p>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </div>
-
-                          {/* Recent Payouts Table */}
-                          <Card>
-                            <CardHeader>
-                              <CardTitle>Payout History</CardTitle>
-                              <CardDescription>Your recent monthly payouts</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                              <div className="overflow-x-auto">
-                                <table className="w-full">
-                                  <thead>
-                                    <tr className="border-b">
-                                      <th className="text-left p-2">Month</th>
-                                      <th className="text-left p-2">Units Generated</th>
-                                      <th className="text-left p-2">Payout Amount</th>
-                                      <th className="text-left p-2">Status</th>
-                                    </tr>
-                                  </thead>
-                                  <tbody>
-                                    {selectedSubscription.payouts.slice(-6).map((payout) => (
-                                      <tr key={payout.id} className="border-b">
-                                        <td className="p-2">
-                                          {new Date(payout.payout_month).toLocaleDateString('en-IN', { 
-                                            month: 'long', 
-                                            year: 'numeric' 
-                                          })}
-                                        </td>
-                                        <td className="p-2">{payout.units_generated_kwh} kWh</td>
-                                        <td className="p-2 font-medium">{formatCurrency(payout.payout_amount)}</td>
-                                        <td className="p-2">
-                                          <Badge className={payout.status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}>
-                                            {payout.status}
-                                          </Badge>
-                                        </td>
-                                      </tr>
-                                    ))}
-                                  </tbody>
-                                </table>
+                    
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white h-10 shadow-sm" 
+                          onClick={() => fetchSubscriptionDetails(subscription.id)}
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          View Details
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[85vh] overflow-y-auto">
+                        <DialogHeader className="pb-4 border-b">
+                          <DialogTitle className="text-2xl">{subscription.project.title}</DialogTitle>
+                          <DialogDescription className="text-base">
+                            Performance insights and payout history
+                          </DialogDescription>
+                        </DialogHeader>
+                        
+                        {detailLoading ? (
+                          <div className="p-12">
+                            <div className="animate-pulse space-y-6">
+                              <div className="grid grid-cols-4 gap-4">
+                                {[1, 2, 3, 4].map(i => (
+                                  <div key={i} className="h-24 bg-slate-200 rounded-xl"></div>
+                                ))}
                               </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-                      ) : (
-                        <div className="p-8 text-center">
-                          <p className="text-gray-600">Failed to load subscription details</p>
-                        </div>
-                      )}
-                    </DialogContent>
-                  </Dialog>
-                </CardContent>
-              </Card>
-            ))}
+                              <div className="h-64 bg-slate-200 rounded-xl"></div>
+                            </div>
+                          </div>
+                        ) : selectedSubscription ? (
+                          <div className="space-y-6 py-4">
+                            {/* Key Metrics */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                              <Card className="border-0 bg-gradient-to-br from-blue-50 to-blue-100">
+                                <CardContent className="p-4 text-center">
+                                  <p className="text-xs text-blue-700 font-medium mb-1">Subscribed Capacity</p>
+                                  <p className="text-2xl font-bold text-blue-900">{selectedSubscription.subscribed_kw} <span className="text-sm">kW</span></p>
+                                </CardContent>
+                              </Card>
+                              <Card className="border-0 bg-gradient-to-br from-emerald-50 to-emerald-100">
+                                <CardContent className="p-4 text-center">
+                                  <p className="text-xs text-emerald-700 font-medium mb-1">Avg Monthly Gen.</p>
+                                  <p className="text-2xl font-bold text-emerald-900">{selectedSubscription.avgMonthlyGeneration.toFixed(0)} <span className="text-sm">kWh</span></p>
+                                </CardContent>
+                              </Card>
+                              <Card className="border-0 bg-gradient-to-br from-purple-50 to-purple-100">
+                                <CardContent className="p-4 text-center">
+                                  <p className="text-xs text-purple-700 font-medium mb-1">Avg Monthly Payout</p>
+                                  <p className="text-xl font-bold text-purple-900">{formatCurrency(selectedSubscription.avgMonthlyPayout)}</p>
+                                </CardContent>
+                              </Card>
+                              <Card className="border-0 bg-gradient-to-br from-amber-50 to-amber-100">
+                                <CardContent className="p-4 text-center">
+                                  <p className="text-xs text-amber-700 font-medium mb-1">Last Month</p>
+                                  <p className="text-xl font-bold text-amber-900">{formatCurrency(selectedSubscription.lastMonthPayout)}</p>
+                                </CardContent>
+                              </Card>
+                            </div>
+
+                            {/* Recent Payouts Table */}
+                            <Card className="border-0 shadow-sm">
+                              <CardHeader>
+                                <CardTitle className="text-lg">Payout History</CardTitle>
+                                <CardDescription>Your recent monthly earnings</CardDescription>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="overflow-x-auto">
+                                  <table className="w-full">
+                                    <thead>
+                                      <tr className="border-b border-slate-200">
+                                        <th className="text-left p-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Month</th>
+                                        <th className="text-left p-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Units Generated</th>
+                                        <th className="text-left p-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Payout</th>
+                                        <th className="text-left p-3 text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      {selectedSubscription.payouts.slice(-6).reverse().map((payout) => (
+                                        <tr key={payout.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                                          <td className="p-3 text-sm text-slate-900">
+                                            {new Date(payout.payout_month).toLocaleDateString('en-IN', { 
+                                              month: 'short', 
+                                              year: 'numeric' 
+                                            })}
+                                          </td>
+                                          <td className="p-3 text-sm text-slate-700">{payout.units_generated_kwh} kWh</td>
+                                          <td className="p-3 text-sm font-semibold text-slate-900">{formatCurrency(payout.payout_amount)}</td>
+                                          <td className="p-3">
+                                            <Badge className={`${payout.status === 'paid' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'} border text-xs`}>
+                                              {payout.status}
+                                            </Badge>
+                                          </td>
+                                        </tr>
+                                      ))}
+                                    </tbody>
+                                  </table>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </div>
+                        ) : (
+                          <div className="p-12 text-center">
+                            <p className="text-slate-600">Failed to load subscription details</p>
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         )}
       </div>
