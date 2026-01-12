@@ -68,7 +68,7 @@ function NavContent() {
               <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center mr-3">
                 <LucideSun className="w-5 h-5 text-white" />
               </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
+              <h1 className="text-2xl font-bold text-green-900">
                 Renewz
               </h1>
             </Link>
