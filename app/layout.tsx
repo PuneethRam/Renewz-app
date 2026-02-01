@@ -179,8 +179,7 @@ function NavContent() {
           </div>
 
           {/* Desktop Right Side */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button
+          {/* <button
               onClick={toggleDarkMode}
               className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -189,7 +188,7 @@ function NavContent() {
                 <LucideSun className="w-5 h-5 text-amber-500" /> : 
                 <LucideMoon className="w-5 h-5 text-blue-600" />
               }
-            </button>
+            </button> */}
 
             {user ? (
               <div className="flex items-center space-x-3">

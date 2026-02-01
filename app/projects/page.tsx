@@ -472,13 +472,13 @@ const Projects: React.FC = () => {
         </motion.div>
 
         {/* Enhanced Filters */}
-        <motion.div
+                <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="mb-12"
+          className="mb-12 relative"
         >
-          <div className="bg-white/60 dark:bg-slate-800/60 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-white/20 dark:border-slate-700/50">
+          <div className="w-full bg-white/95 dark:bg-slate-800/95 border rounded-xl shadow-xl z-[10] p-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
               {/* Enhanced Search */}
               <div className="lg:col-span-2">
@@ -494,10 +494,14 @@ const Projects: React.FC = () => {
                     placeholder="Search by name or location..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="block w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 shadow-sm hover:shadow-md"
+                    className="block w-full pl-12 pr-4 py-3 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm 
+                              border border-slate-200 dark:border-slate-600 rounded-xl text-slate-900 
+                              dark:text-white placeholder-slate-500 dark:placeholder-slate-400 
+                              focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all 
+                              duration-300 shadow-sm hover:shadow-md"
                   />
+                  </div>
                 </div>
-              </div>
 
               {/* Custom Dropdowns */}
               <CustomDropdown
