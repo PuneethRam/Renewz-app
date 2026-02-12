@@ -3,7 +3,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation"; 
-import { LucideHome, LucideTrendingUp, LucideLogOut, User, Menu, X } from "lucide-react";
+import {  LucideLogOut, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 

@@ -2,8 +2,30 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform, useInView, useSpring } from 'framer-motion';
-import { ArrowRight, Check, X, Smartphone, CreditCard, Zap, Shield, TrendingUp, Sun, BarChart3, ChevronRight, Play } from 'lucide-react';
+import { motion, useInView } from 'framer-motion';
+import { ArrowRight, Check, X, CreditCard, Zap, Shield, TrendingUp, Sun, BarChart3, ChevronRight, Play } from 'lucide-react';
+
+// Pre-computed stable positions — no Math.random() at render time (fixes hydration error)
+const PARTICLE_POSITIONS = [
+  { left: "4%",   top: "12%" }, { left: "18%",  top: "75%" },
+  { left: "33%",  top: "42%" }, { left: "52%",  top: "8%"  },
+  { left: "67%",  top: "60%" }, { left: "81%",  top: "28%" },
+  { left: "91%",  top: "85%" }, { left: "6%",   top: "55%" },
+  { left: "24%",  top: "90%" }, { left: "43%",  top: "33%" },
+  { left: "59%",  top: "18%" }, { left: "75%",  top: "72%" },
+  { left: "88%",  top: "46%" }, { left: "14%",  top: "38%" },
+  { left: "38%",  top: "66%" }, { left: "56%",  top: "91%" },
+  { left: "70%",  top: "15%" }, { left: "84%",  top: "58%" },
+  { left: "29%",  top: "22%" }, { left: "47%",  top: "80%" },
+];
+
+interface StepData {
+  step: string;
+  title: string;
+  desc: string;
+  detail: string;
+  visual: React.ReactNode;
+}
 
 const Landing: React.FC = () => {
   return (
@@ -21,7 +43,7 @@ const Landing: React.FC = () => {
   );
 };
 
-/* HERO - Enhanced with better animations */
+/* HERO */
 const Hero: React.FC = () => {
   const [count, setCount] = useState({ earnings: 0, owners: 0 });
 
@@ -30,7 +52,7 @@ const Hero: React.FC = () => {
     const steps = 60;
     const earningsTarget = 160000;
     const ownersTarget = 10;
-    
+
     let currentStep = 0;
     const timer = setInterval(() => {
       currentStep++;
@@ -38,7 +60,7 @@ const Hero: React.FC = () => {
         earnings: Math.floor((earningsTarget / steps) * currentStep),
         owners: Math.floor((ownersTarget / steps) * currentStep),
       });
-      
+
       if (currentStep >= steps) clearInterval(timer);
     }, duration / steps);
 
@@ -50,34 +72,18 @@ const Hero: React.FC = () => {
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          animate={{
-            scale: [1, 1.2, 1],
-            opacity: [0.3, 0.2, 0.3],
-          }}
-          transition={{
-            duration: 8,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.2, 0.3] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute top-20 right-20 w-96 h-96 bg-gradient-to-br from-teal-200 to-cyan-200 rounded-full blur-3xl"
         />
         <motion.div
-          animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.2, 0.3, 0.2],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: "easeInOut",
-            delay: 1,
-          }}
+          animate={{ scale: [1, 1.1, 1], opacity: [0.2, 0.3, 0.2] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           className="absolute bottom-20 left-20 w-96 h-96 bg-gradient-to-br from-cyan-200 to-blue-200 rounded-full blur-3xl"
         />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        
         {/* Headline */}
         <div className="text-center mb-20">
           <motion.div
@@ -117,7 +123,7 @@ const Hero: React.FC = () => {
             transition={{ delay: 0.3 }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Link 
+            <Link
               href="/projects"
               className="group px-8 py-4 bg-gradient-to-r from-teal-600 to-cyan-600 text-white rounded-xl font-semibold hover:shadow-xl transition-all text-lg inline-flex items-center justify-center"
             >
@@ -154,7 +160,7 @@ const Hero: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* NARRATIVE HOOK SECTION - Scroll-triggered story */}
+        {/* NARRATIVE HOOK SECTION */}
         <NarrativeHook />
 
         {/* Enhanced Dashboard Screenshot */}
@@ -166,7 +172,7 @@ const Hero: React.FC = () => {
         >
           {/* Glow effect */}
           <div className="absolute -inset-4 bg-gradient-to-r from-teal-400 to-cyan-400 rounded-3xl opacity-20 blur-3xl" />
-          
+
           {/* Browser Window */}
           <div className="relative bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
             {/* Browser Chrome */}
@@ -188,12 +194,11 @@ const Hero: React.FC = () => {
 
             {/* Dashboard Content */}
             <div className="p-8 bg-gradient-to-br from-gray-50 via-white to-teal-50/20">
-              
               {/* Header */}
               <div className="mb-8 flex items-center justify-between">
                 <div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-1">Welcome back, Priya</h3>
-                  <p className="text-gray-500">Here's your solar performance today</p>
+                  <p className="text-gray-500">Here&apos;s your solar performance today</p>
                 </div>
                 <div className="flex items-center gap-2 px-4 py-2 bg-green-50 border border-green-200 rounded-full">
                   <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
@@ -203,7 +208,7 @@ const Hero: React.FC = () => {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 {/* Card 1 */}
-                <motion.div 
+                <motion.div
                   className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all"
                   whileHover={{ y: -4 }}
                 >
@@ -222,7 +227,7 @@ const Hero: React.FC = () => {
                 </motion.div>
 
                 {/* Card 2 - Featured */}
-                <motion.div 
+                <motion.div
                   className="bg-gradient-to-br from-teal-600 to-cyan-600 rounded-xl p-6 shadow-lg text-white relative overflow-hidden"
                   whileHover={{ y: -4 }}
                 >
@@ -243,7 +248,7 @@ const Hero: React.FC = () => {
                 </motion.div>
 
                 {/* Card 3 */}
-                <motion.div 
+                <motion.div
                   className="bg-white rounded-xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all"
                   whileHover={{ y: -4 }}
                 >
@@ -261,7 +266,7 @@ const Hero: React.FC = () => {
                       <span className="font-semibold">80%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
-                      <motion.div 
+                      <motion.div
                         className="bg-gradient-to-r from-teal-500 to-cyan-500 h-2 rounded-full"
                         initial={{ width: 0 }}
                         animate={{ width: '80%' }}
@@ -341,7 +346,7 @@ const Hero: React.FC = () => {
   );
 };
 
-/* NARRATIVE HOOK - Cinematic storytelling with stunning visuals */
+/* NARRATIVE HOOK */
 const NarrativeHook: React.FC = () => {
   return (
     <div className="my-40 space-y-32">
@@ -356,16 +361,14 @@ const NarrativeHook: React.FC = () => {
         <div className="grid md:grid-cols-2 gap-12 items-center">
           {/* Left: Visual */}
           <div className="relative">
-            <motion.div 
+            <motion.div
               className="relative"
               initial={{ opacity: 0 }}
               whileInView={{ opacity: 1 }}
               viewport={{ once: false }}
               transition={{ delay: 0.3 }}
             >
-              {/* Building illustration with gradient */}
               <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl p-12 overflow-hidden">
-                {/* Animated building grid */}
                 <div className="grid grid-cols-4 gap-3">
                   {[...Array(16)].map((_, i) => (
                     <motion.div
@@ -373,15 +376,10 @@ const NarrativeHook: React.FC = () => {
                       className="aspect-square bg-gray-300 rounded-lg"
                       initial={{ opacity: 0.3 }}
                       animate={{ opacity: [0.3, 0.6, 0.3] }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        delay: i * 0.1
-                      }}
+                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
                     />
                   ))}
                 </div>
-                {/* Floating "NO SOLAR" badge */}
                 <motion.div
                   className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
                   animate={{ rotate: [-5, 5, -5] }}
@@ -418,7 +416,7 @@ const NarrativeHook: React.FC = () => {
                 </div>
                 <div className="flex items-start gap-3">
                   <X className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
-                  <span>Can't install panels as a renter</span>
+                  <span>Can&apos;t install panels as a renter</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <X className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
@@ -430,7 +428,7 @@ const NarrativeHook: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Scene 2: The Frustration - Animated bill growing */}
+      {/* Scene 2: The Frustration */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -459,14 +457,14 @@ const NarrativeHook: React.FC = () => {
               </h3>
               <div className="space-y-6">
                 <p className="text-xl text-gray-600 leading-relaxed">
-                  Every month, the same story. Your electricity bill arrives, and it's higher than last time.
+                  Every year, the same story. Your electricity bill arrives, and it&apos;s higher than last time.
                 </p>
                 <div className="p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border-2 border-red-200">
                   <p className="text-2xl font-bold text-red-900 mb-2">
                     Meanwhile, solar owners save ₹2,000-3,000/month
                   </p>
                   <p className="text-gray-700">
-                    It doesn't seem fair, does it?
+                    It doesn&apos;t seem fair, does it?
                   </p>
                 </div>
               </div>
@@ -476,7 +474,6 @@ const NarrativeHook: React.FC = () => {
           {/* Right: Visual - Animated growing bills */}
           <div className="relative order-1 md:order-2">
             <div className="relative bg-gradient-to-br from-red-50 to-orange-50 rounded-3xl p-12 overflow-hidden">
-              {/* Background pattern */}
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0" style={{
                   backgroundImage: 'radial-gradient(circle, #ef4444 1px, transparent 1px)',
@@ -484,13 +481,12 @@ const NarrativeHook: React.FC = () => {
                 }} />
               </div>
 
-              {/* Animated bill stack */}
               <div className="relative space-y-4">
                 {[
-                  { month: 'Jan', amount: 2800 },
-                  { month: 'Feb', amount: 3100 },
-                  { month: 'Mar', amount: 3500 },
-                  { month: 'Apr', amount: 3800 },
+                  { month: 'Apr', amount: 2800 ,year:2019 },
+                  { month: 'Apr', amount: 3100, year:2021 },
+                  { month: 'Apr', amount: 3500, year:2023 },
+                  { month: 'Apr', amount: 3800, year:2025 },
                 ].map((bill, i) => (
                   <motion.div
                     key={i}
@@ -503,7 +499,7 @@ const NarrativeHook: React.FC = () => {
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-sm text-gray-500 font-medium">{bill.month} 2024</div>
+                        <div className="text-sm text-gray-500 font-medium">{bill.month} {bill.year}</div>
                         <div className="text-xs text-gray-400 mt-1">Electricity Bill</div>
                       </div>
                       <motion.div
@@ -514,7 +510,6 @@ const NarrativeHook: React.FC = () => {
                         ₹{bill.amount.toLocaleString()}
                       </motion.div>
                     </div>
-                    {/* Progress bar showing increase */}
                     <div className="mt-3 h-2 bg-gray-100 rounded-full overflow-hidden">
                       <motion.div
                         className="h-full bg-gradient-to-r from-red-400 to-red-600"
@@ -528,7 +523,6 @@ const NarrativeHook: React.FC = () => {
                 ))}
               </div>
 
-              {/* Trending up arrow */}
               <motion.div
                 className="absolute top-4 right-4"
                 animate={{ y: [-10, 10, -10] }}
@@ -541,7 +535,7 @@ const NarrativeHook: React.FC = () => {
         </div>
       </motion.div>
 
-      {/* Scene 3: The Solution - Dramatic reveal with particles */}
+      {/* Scene 3: The Solution */}
       <motion.div
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -550,44 +544,26 @@ const NarrativeHook: React.FC = () => {
         className="max-w-7xl mx-auto px-6"
       >
         <div className="relative">
-          {/* Gradient background with animation */}
           <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl overflow-hidden">
-            {/* Animated particles */}
+            {/* Fixed particles — using pre-computed positions, no Math.random() */}
             <div className="absolute inset-0">
-              {[...Array(20)].map((_, i) => (
+              {PARTICLE_POSITIONS.map((pos, i) => (
                 <motion.div
                   key={i}
                   className="absolute w-2 h-2 bg-white rounded-full"
-                  style={{
-                    left: `${Math.random() * 100}%`,
-                    top: `${Math.random() * 100}%`,
-                  }}
-                  animate={{
-                    y: [0, -30, 0],
-                    opacity: [0, 1, 0],
-                  }}
-                  transition={{
-                    duration: 3,
-                    repeat: Infinity,
-                    delay: i * 0.2,
-                  }}
+                  style={{ left: pos.left, top: pos.top }}
+                  animate={{ y: [0, -30, 0], opacity: [0, 1, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, delay: i * 0.2 }}
                 />
               ))}
             </div>
           </div>
 
           <div className="relative p-12 md:p-16 text-center text-white">
-            {/* Animated sun icon */}
             <motion.div
               className="inline-block mb-8"
-              animate={{
-                rotate: 360,
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear"
-              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl" />
@@ -621,7 +597,6 @@ const NarrativeHook: React.FC = () => {
               Just <strong>your panels, your earnings</strong>.
             </motion.p>
 
-            {/* Animated stats reveal */}
             <motion.div
               className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8"
               initial={{ opacity: 0, scale: 0.9 }}
@@ -633,16 +608,15 @@ const NarrativeHook: React.FC = () => {
                 <div className="text-sm font-semibold opacity-90 mb-1">This Month Generated</div>
                 <CountingNumber end={156} className="text-4xl font-bold" suffix=" kWh" />
               </div>
-              
+
               <div className="hidden sm:block w-px h-12 bg-white/30" />
-              
+
               <div className="bg-white/20 backdrop-blur-lg rounded-2xl px-8 py-4 border border-white/30">
                 <div className="text-sm font-semibold opacity-90 mb-1">You Earned</div>
                 <CountingNumber end={2840} className="text-4xl font-bold" prefix="₹" />
               </div>
             </motion.div>
 
-            {/* Arrow pointing down */}
             <motion.div
               animate={{ y: [0, 15, 0] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -664,12 +638,12 @@ const NarrativeHook: React.FC = () => {
   );
 };
 
-// Counting number animation component
-const CountingNumber: React.FC<{ end: number; className?: string; prefix?: string; suffix?: string }> = ({ 
-  end, 
-  className = "", 
-  prefix = "", 
-  suffix = "" 
+/* COUNTING NUMBER ANIMATION */
+const CountingNumber: React.FC<{ end: number; className?: string; prefix?: string; suffix?: string }> = ({
+  end,
+  className = "",
+  prefix = "",
+  suffix = ""
 }) => {
   const [count, setCount] = useState(0);
 
@@ -720,21 +694,21 @@ const TrustBar: React.FC = () => {
 /* THREE VALUE PROPS */
 const ThreeValueProps: React.FC = () => {
   const props = [
-    { 
-      title: "Zero installation", 
-      desc: "No panels on your roof. No permits. No hassle. Just reserve capacity online.", 
+    {
+      title: "Zero installation",
+      desc: "No panels on your roof. No permits. No hassle. Just reserve capacity online.",
       icon: Shield,
       color: "from-blue-500 to-cyan-500"
     },
-    { 
-      title: "Start in 3 minutes", 
-      desc: "Browse projects, reserve panels, and start generating—all from your phone.", 
+    {
+      title: "Start in 3 minutes",
+      desc: "Browse projects, reserve panels, and start generating—all from your phone.",
       icon: Zap,
       color: "from-teal-500 to-green-500"
     },
-    { 
-      title: "Track everything live", 
-      desc: "Real-time dashboard shows every kWh generated and rupee earned.", 
+    {
+      title: "Track everything live",
+      desc: "Real-time dashboard shows every kWh generated and rupee earned.",
       icon: BarChart3,
       color: "from-cyan-500 to-blue-500"
     },
@@ -881,7 +855,7 @@ const ComparisonTable: React.FC = () => {
 
 /* HOW IT WORKS */
 const HowItWorksSteps: React.FC = () => {
-  const steps = [
+  const steps: StepData[] = [
     {
       step: "01",
       title: "Browse solar projects",
@@ -937,7 +911,7 @@ const HowItWorksSteps: React.FC = () => {
   );
 };
 
-const EnhancedStepRow: React.FC<{ step: any; index: number }> = ({ step, index }) => {
+const EnhancedStepRow: React.FC<{ step: StepData; index: number }> = ({ step, index }) => {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
   const isEven = index % 2 === 0;
@@ -950,7 +924,6 @@ const EnhancedStepRow: React.FC<{ step: any; index: number }> = ({ step, index }
       transition={{ duration: 0.8 }}
       className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-center gap-12`}
     >
-      {/* Content */}
       <div className="flex-1">
         <div className="inline-block px-3 py-1 bg-teal-100 text-teal-700 rounded-full font-bold text-sm mb-4">
           {step.step}
@@ -967,7 +940,6 @@ const EnhancedStepRow: React.FC<{ step: any; index: number }> = ({ step, index }
         </div>
       </div>
 
-      {/* Visual */}
       <div className="flex-1 w-full">
         {step.visual}
       </div>
@@ -975,7 +947,6 @@ const EnhancedStepRow: React.FC<{ step: any; index: number }> = ({ step, index }
   );
 };
 
-// Project Cards Preview
 const ProjectCardsPreview: React.FC = () => {
   return (
     <div className="bg-gradient-to-br from-teal-50 to-cyan-50 rounded-3xl p-8 shadow-xl border border-teal-100">
@@ -1017,10 +988,9 @@ const ProjectCardsPreview: React.FC = () => {
   );
 };
 
-// Power Provider Preview
 const PowerProviderPreview: React.FC = () => {
   const providers = ['BESCOM', 'TPDDL', 'BSES', 'MSEDCL', 'TNEB', 'KSEB'];
-  
+
   return (
     <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 shadow-xl border border-blue-100">
       <div className="bg-white rounded-2xl p-6">
@@ -1049,26 +1019,25 @@ const PowerProviderPreview: React.FC = () => {
   );
 };
 
-// Bill Payment Preview
 const BillPaymentPreview: React.FC = () => {
   return (
     <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 shadow-xl border border-green-100">
       <div className="bg-white rounded-2xl p-6">
         <h4 className="font-bold text-gray-900 mb-6 text-lg">Monthly bill summary</h4>
-        
+
         <div className="space-y-3 mb-6">
           <div className="flex justify-between items-center p-4 bg-gray-50 rounded-xl">
             <span className="text-gray-600 font-medium">Original Bill</span>
             <span className="text-2xl font-bold text-gray-900">₹3,500</span>
           </div>
-          
+
           <div className="flex justify-between items-center p-4 bg-teal-50 rounded-xl border-2 border-teal-200">
             <span className="text-teal-700 font-semibold">Solar Credits</span>
             <span className="text-2xl font-bold text-teal-600">-₹2,840</span>
           </div>
-          
+
           <div className="h-px bg-gray-200 my-2" />
-          
+
           <div className="flex justify-between items-center p-4 bg-green-50 rounded-xl border-2 border-green-200">
             <span className="text-green-700 font-bold">You Pay</span>
             <span className="text-3xl font-bold text-green-600">₹660</span>
@@ -1079,7 +1048,7 @@ const BillPaymentPreview: React.FC = () => {
           <CreditCard className="w-5 h-5" />
           Pay Now
         </button>
-        
+
         <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200">
           <p className="text-sm text-green-700 text-center font-semibold">
             🎉 You saved 81% this month!
@@ -1115,7 +1084,7 @@ const LiveImpactNumbers: React.FC = () => {
             Making a real difference
           </h2>
           <p className="text-xl text-gray-600">
-            Together we're building a cleaner future
+            Together we&apos;re building a cleaner future
           </p>
         </div>
 
@@ -1130,7 +1099,7 @@ const LiveImpactNumbers: React.FC = () => {
               className="relative group"
             >
               <div className="p-6 bg-white rounded-2xl border border-gray-100 hover:border-teal-200 hover:shadow-lg transition-all text-center">
-                <div className={`w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                   <metric.icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="text-4xl font-bold text-gray-900 mb-1">
@@ -1207,28 +1176,24 @@ const Testimonials: React.FC = () => {
               className="group"
             >
               <div className="bg-white rounded-2xl p-8 border border-gray-100 hover:border-teal-200 hover:shadow-xl transition-all h-full flex flex-col">
-                {/* Quote icon */}
                 <div className="mb-4">
                   <svg className="w-10 h-10 text-teal-100" fill="currentColor" viewBox="0 0 24 24">
                     <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                   </svg>
                 </div>
 
-                {/* Rating */}
                 <div className="flex gap-1 mb-4">
-                  {[...Array(t.rating)].map((_, i) => (
-                    <svg key={i} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                  {[...Array(t.rating)].map((_, j) => (
+                    <svg key={j} className="w-5 h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
                   ))}
                 </div>
 
-                {/* Quote */}
                 <p className="text-gray-700 mb-6 leading-relaxed flex-grow">
-                  "{t.quote}"
+                  &ldquo;{t.quote}&rdquo;
                 </p>
 
-                {/* Author */}
                 <div className="pt-6 border-t border-gray-100">
                   <div className="flex items-start justify-between gap-4">
                     <div>
@@ -1249,7 +1214,6 @@ const Testimonials: React.FC = () => {
           ))}
         </div>
 
-        {/* Social proof */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -1272,7 +1236,7 @@ const Testimonials: React.FC = () => {
   );
 };
 
-/* FAQ SECTION */
+/* FAQ */
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
