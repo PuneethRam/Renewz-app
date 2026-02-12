@@ -3,7 +3,7 @@
 import "./globals.css";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation"; 
-import { LucideHome, LucideTrendingUp, LucideSun, LucideMoon, LucideLogOut, User, Menu, X } from "lucide-react";
+import { LucideHome, LucideTrendingUp, LucideLogOut, User, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { AuthProvider, useAuth } from "@/context/AuthContext";
 
@@ -11,33 +11,14 @@ function NavContent() {
   const { logout, user } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
-  const [darkMode, setDarkMode] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    // Check for saved theme preference or system preference
-    const savedTheme = localStorage.getItem('theme');
-    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    
-    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
-      setDarkMode(true);
-      document.documentElement.classList.add("dark");
-    }
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const toggleDarkMode = () => {
-    setDarkMode((prev) => {
-      const newMode = !prev;
-      localStorage.setItem('theme', newMode ? 'dark' : 'light');
-      
-      if (newMode) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
-      return newMode;
-    });
-  };
 
   const handleLogout = async () => {
     try {
@@ -59,369 +40,286 @@ function NavContent() {
   };
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 shadow-lg z-50 backdrop-blur-sm bg-white/95 dark:bg-gray-900/95">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/dashboard" className="flex items-center">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center mr-3">
-                <LucideSun className="w-5 h-5 text-white" />
-              </div>
-              <h1 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-green-600 to-blue-600">
-                Renewz
-              </h1>
-            </Link>
-          </div>
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      scrolled ? 'bg-white/95 backdrop-blur-md shadow-sm' : 'bg-transparent'
+    }`}>
+      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+        {/* Logo */}
+        <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+          Renewz
+        </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              {user ? (
-                // Logged in navigation
-                <>
-                  <Link
-                    href="/dashboard"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/dashboard')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400 border-b-2 border-green-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideHome className="w-4 h-4 inline mr-2" />
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/projects"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/projects')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Explore Projects
-                  </Link>
-                  <Link
-                    href="/calculator"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/calculator')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Investment Calculator
-                  </Link>
-                  <Link
-                    href="/investments"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/transactions')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Transactions
-                  </Link>
-                </>
-              ) : (
-                // Logged out navigation
-                <>
-                  <Link
-                    href="/"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400 border-b-2 border-green-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideHome className="w-4 h-4 inline mr-2" />
-                    Home
-                  </Link>
-                  <Link
-                    href="/projects"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/projects')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Explore Projects
-                  </Link>
-                  <Link
-                    href="/calculator"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/calculator')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Investment Calculator
-                  </Link>
-                  <Link
-                    href="/about"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/about')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-yellow-600 dark:text-yellow-400 border-b-2 border-yellow-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    About
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
+          {user ? (
+            // Logged in navigation
+            <>
+              <Link
+                href="/dashboard"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/dashboard') ? 'text-teal-600' : ''
+                }`}
+              >
+                Dashboard
+              </Link>
+              <Link
+                href="/projects"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/projects') ? 'text-teal-600' : ''
+                }`}
+              >
+                Projects
+              </Link>
+              <Link
+                href="/calculator"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/calculator') ? 'text-teal-600' : ''
+                }`}
+              >
+                Calculator
+              </Link>
+              <Link
+                href="/investments"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/investments') ? 'text-teal-600' : ''
+                }`}
+              >
+                My Investments
+              </Link>
 
-          {/* Desktop Right Side */}
-          <div className="hidden md:flex items-center space-x-4">
-            <button
-              onClick={toggleDarkMode}
-              className="p-2 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-              aria-label={darkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {darkMode ? 
-                <LucideSun className="w-5 h-5 text-amber-500" /> : 
-                <LucideMoon className="w-5 h-5 text-blue-600" />
-              }
-            </button>
-
-            {user ? (
-              <div className="flex items-center space-x-3">
-                {/* Profile Circle with Name */}
-                <div className="relative group">
-                  <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white">
-                      <User className="w-4 h-4" />
-                    </div>
-                    <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {user.displayName || user.email?.split('@')[0]}
-                    </span>
+              {/* User Profile Dropdown */}
+              <div className="relative group">
+                <div className="flex items-center space-x-2 cursor-pointer p-2 rounded-lg hover:bg-gray-50 transition-colors">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 flex items-center justify-center text-white text-sm font-semibold">
+                    {user.displayName?.[0] || user.email?.[0].toUpperCase()}
                   </div>
-                  
-                  {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                        {user.displayName || user.email}
-                      </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-400">Solar Investor</p>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      <LucideLogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-3">
-                <Link
-                  href="/auth/login"
-                  className="text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 px-3 py-2 rounded-md text-sm font-medium transition-colors"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/auth/signup"
-                  className="bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200 shadow-md hover:shadow-lg"
-                >
-                  Sign Up
-                </Link>
-              </div>
-            )}
-          </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-md text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-100 dark:hover:bg-gray-800"
-            >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Mobile Navigation Menu */}
-        {mobileMenuOpen && (
-          <div className="md:hidden">
-            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-gray-200 dark:border-gray-700">
-              {user ? (
-                // Logged in mobile navigation
-                <>
-                  <Link
-                    href="/dashboard"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/dashboard')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideHome className="w-4 h-4 inline mr-2" />
-                    Dashboard
-                  </Link>
-                  <Link
-                    href="/projects"
-                    className={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                      isActive('/projects')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400 border-b-2 border-blue-500'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Explore Projects
-                  </Link>
-                  <Link
-                    href="/calculator"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/calculator')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Investment Calculator
-                  </Link>
-                  <Link
-                    href="/investments"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/investments')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    My Transactions
-                  </Link>
-                </>
-              ) : (
-                // Logged out mobile navigation
-                <>
-                  <Link
-                    href="/"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-green-600 dark:text-green-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideHome className="w-4 h-4 inline mr-2" />
-                    Home
-                  </Link>
-                  <Link
-                    href="/projects"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/projects')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Explore Projects
-                  </Link>
-                  <Link
-                    href="/calculator"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/calculator')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    <LucideTrendingUp className="w-4 h-4 inline mr-2" />
-                    Investment Calculator
-                  </Link>
-                  <Link
-                    href="/about"
-                    onClick={closeMobileMenu}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      isActive('/about')
-                        ? 'bg-gradient-to-r from-green-500/10 to-blue-500/10 text-yellow-600 dark:text-yellow-400'
-                        : 'text-gray-700 dark:text-gray-300 hover:text-yellow-600 dark:hover:text-yellow-400 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
-                  >
-                    About
-                  </Link>
-                </>
-              )}
-              
-              <div className="border-t border-gray-200 dark:border-gray-700 pt-4 pb-3">
-                <div className="flex items-center px-3 mb-3">
-                  <button
-                    onClick={toggleDarkMode}
-                    className="flex items-center w-full p-2 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    {darkMode ? 
-                      <>
-                        <LucideSun className="w-5 h-5 text-amber-500 mr-2" />
-                        <span className="text-sm">Light Mode</span>
-                      </> : 
-                      <>
-                        <LucideMoon className="w-5 h-5 text-blue-600 mr-2" />
-                        <span className="text-sm">Dark Mode</span>
-                      </>
-                    }
-                  </button>
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.displayName || user.email?.split('@')[0]}
+                  </span>
                 </div>
                 
-                {user ? (
-                  <>
-                    <div className="flex items-center px-3 mb-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-green-500 to-blue-500 flex items-center justify-center text-white">
-                        <User className="w-5 h-5" />
-                      </div>
-                      <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                          {user.displayName || user.email}
-                        </div>
-                        <div className="text-xs text-gray-500 dark:text-gray-400">Solar Investor</div>
-                      </div>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center w-full px-3 py-2 text-red-600 dark:text-red-400 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-md"
-                    >
-                      <LucideLogOut className="w-4 h-4 mr-2" />
-                      Logout
-                    </button>
-                  </>
-                ) : (
-                  <div className="space-y-2">
-                    <Link
-                      href="/auth/login"
-                      onClick={closeMobileMenu}
-                      className="block w-full text-center text-gray-700 dark:text-gray-300 hover:text-green-600 dark:hover:text-green-400 px-4 py-2 rounded-md text-sm font-medium transition-colors border border-gray-300 dark:border-gray-600"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/auth/signup"
-                      onClick={closeMobileMenu}
-                      className="block w-full text-center bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
-                    >
-                      Sign Up
-                    </Link>
+                {/* Dropdown Menu */}
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 border border-gray-100">
+                  <div className="px-4 py-2 border-b border-gray-100">
+                    <p className="text-sm font-medium text-gray-900">
+                      {user.displayName || user.email}
+                    </p>
+                    <p className="text-xs text-gray-500">Solar Investor</p>
                   </div>
-                )}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-gray-50 transition-colors"
+                  >
+                    <LucideLogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </button>
+                </div>
               </div>
-            </div>
-          </div>
-        )}
+            </>
+          ) : (
+            // Logged out navigation
+            <>
+              <Link
+                href="/"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/') ? 'text-teal-600' : ''
+                }`}
+              >
+                Home
+              </Link>
+              <Link
+                href="/projects"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/projects') ? 'text-teal-600' : ''
+                }`}
+              >
+                Projects
+              </Link>
+              <Link
+                href="/calculator"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/calculator') ? 'text-teal-600' : ''
+                }`}
+              >
+                Calculator
+              </Link>
+              <Link
+                href="/about"
+                className={`text-gray-700 hover:text-teal-600 transition-colors font-medium ${
+                  isActive('/about') ? 'text-teal-600' : ''
+                }`}
+              >
+                About
+              </Link>
+              <Link 
+                href="/auth/login"
+                className="text-gray-700 hover:text-teal-600 transition-colors font-medium"
+              >
+                Login
+              </Link>
+              <Link 
+                href="/auth/signup"
+                className="px-6 py-2.5 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition-all hover:shadow-lg"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile menu button */}
+        <div className="md:hidden">
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="p-2 rounded-md text-gray-700 hover:text-teal-600 hover:bg-gray-100"
+          >
+            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
+
+      {/* Mobile Navigation Menu */}
+      {mobileMenuOpen && (
+        <div className="md:hidden bg-white border-t border-gray-200">
+          <div className="px-4 pt-2 pb-3 space-y-1">
+            {user ? (
+              // Logged in mobile navigation
+              <>
+                <Link
+                  href="/dashboard"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/dashboard')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Dashboard
+                </Link>
+                <Link
+                  href="/projects"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/projects')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Projects
+                </Link>
+                <Link
+                  href="/calculator"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/calculator')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Calculator
+                </Link>
+                <Link
+                  href="/investments"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/investments')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  My Investments
+                </Link>
+                
+                <div className="border-t border-gray-200 pt-4 mt-4">
+                  <div className="flex items-center px-3 mb-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-teal-600 to-cyan-600 flex items-center justify-center text-white font-semibold">
+                      {user.displayName?.[0] || user.email?.[0].toUpperCase()}
+                    </div>
+                    <div className="ml-3">
+                      <div className="text-sm font-medium text-gray-900">
+                        {user.displayName || user.email}
+                      </div>
+                      <div className="text-xs text-gray-500">Solar Investor</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center w-full px-3 py-2 text-red-600 hover:bg-gray-50 rounded-md"
+                  >
+                    <LucideLogOut className="w-4 h-4 mr-2" />
+                    Logout
+                  </button>
+                </div>
+              </>
+            ) : (
+              // Logged out mobile navigation
+              <>
+                <Link
+                  href="/"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Home
+                </Link>
+                <Link
+                  href="/projects"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/projects')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Projects
+                </Link>
+                <Link
+                  href="/calculator"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/calculator')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  Calculator
+                </Link>
+                <Link
+                  href="/about"
+                  onClick={closeMobileMenu}
+                  className={`block px-3 py-2 rounded-md text-base font-medium ${
+                    isActive('/about')
+                      ? 'bg-teal-50 text-teal-600'
+                      : 'text-gray-700 hover:text-teal-600 hover:bg-gray-50'
+                  }`}
+                >
+                  About
+                </Link>
+                
+                <div className="border-t border-gray-200 pt-4 mt-4 space-y-2">
+                  <Link
+                    href="/auth/login"
+                    onClick={closeMobileMenu}
+                    className="block w-full text-center text-gray-700 hover:text-teal-600 px-4 py-2 rounded-md text-sm font-medium transition-colors border border-gray-300"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/signup"
+                    onClick={closeMobileMenu}
+                    className="block w-full text-center bg-teal-600 hover:bg-teal-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-all duration-200"
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
@@ -448,13 +346,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     );
   }
 
-  // Check if this is a page that needs full-screen treatment
-  const isFullScreenPage = pathname === "/" || pathname === "/landing";
+  // Check if this is the landing page
+  const isLandingPage = pathname === "/";
 
-  if (isFullScreenPage) {
+  if (isLandingPage) {
     return (
       <html lang="en">
-        <body className="bg-gradient-to-br from-green-50 via-blue-50 to-gray-50 dark:from-gray-900 dark:via-green-900/20 dark:to-blue-900/20 text-gray-900 dark:text-gray-100 min-h-screen">
+        <body className="bg-white text-gray-900 min-h-screen">
           <AuthProvider>
             <NavContent />
             {/* Full-screen content without padding/margins */}
@@ -465,9 +363,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     );
   }
 
+  // Regular pages with container
   return (
     <html lang="en">
-      <body className="bg-gradient-to-br from-green-50 via-blue-50 to-gray-50 dark:from-gray-900 dark:via-green-900/20 dark:to-blue-900/20 text-gray-900 dark:text-gray-100 min-h-screen">
+      <body className="bg-gradient-to-br from-teal-50 via-cyan-50 to-gray-50 text-gray-900 min-h-screen">
         <AuthProvider>
           <NavContent />
           
