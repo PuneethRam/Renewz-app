@@ -279,7 +279,6 @@ const Hero: React.FC = () => {
 
               {/* Chart */}
               {/* Chart - FIXED VERSION */}
-              /* SIMPLE TEST VERSION - Bars always visible without animation first */
 
               {/* Chart - Testing Version */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
