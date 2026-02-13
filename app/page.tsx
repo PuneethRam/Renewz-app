@@ -278,6 +278,10 @@ const Hero: React.FC = () => {
               </div>
 
               {/* Chart */}
+              {/* Chart - FIXED VERSION */}
+              /* SIMPLE TEST VERSION - Bars always visible without animation first */
+
+              {/* Chart - Testing Version */}
               <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
                 <div className="flex items-center justify-between mb-6">
                   <div>
@@ -289,23 +293,25 @@ const Hero: React.FC = () => {
                     <option>Last 30 days</option>
                   </select>
                 </div>
-                <div className="h-40 flex items-end gap-2">
-                  {[40, 65, 45, 80, 55, 90, 70].map((height, i) => (
-                    <div key={i} className="flex-1 flex flex-col items-center gap-2">
-                      <motion.div
-                        className="w-full bg-gradient-to-t from-teal-600 to-cyan-400 rounded-t-lg relative group cursor-pointer"
-                        initial={{ height: 0 }}
-                        animate={{ height: `${height}%` }}
-                        transition={{ delay: 1.2 + i * 0.1, duration: 0.5, ease: "easeOut" }}
-                        whileHover={{ opacity: 0.8 }}
-                      >
-                        <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap">
-                          {(height * 0.3).toFixed(1)} kWh
+                
+                {/* Chart with visible bars */}
+                <div className="relative h-48 border-b border-gray-200">
+                  <div className="absolute inset-0 flex items-end justify-between gap-2 pb-2">
+                    {[40, 65, 45, 80, 55, 90, 70].map((height, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center justify-end" style={{ height: '100%' }}>
+                        <div 
+                          className="w-full bg-gradient-to-t from-teal-600 to-cyan-400 rounded-t-lg group cursor-pointer hover:opacity-80 transition-opacity relative"
+                          style={{ height: `${height}%` }}
+                        >
+                          <div className="absolute -top-8 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap z-10">
+                            {(height * 0.3).toFixed(1)} kWh
+                          </div>
                         </div>
-                      </motion.div>
-                    </div>
-                  ))}
+                      </div>
+                    ))}
+                  </div>
                 </div>
+                
                 <div className="flex justify-between mt-3 text-xs text-gray-500">
                   {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
                     <span key={day} className="flex-1 text-center">{day}</span>
@@ -347,133 +353,136 @@ const Hero: React.FC = () => {
 };
 
 /* NARRATIVE HOOK */
+/* NARRATIVE HOOK - FIXED VERSION WITH SCROLL ANIMATIONS */
 const NarrativeHook: React.FC = () => {
   return (
-    <div className="my-40 space-y-32">
+    <div className="my-20 md:my-40 space-y-20 md:space-y-32">
       {/* Scene 1: The Problem */}
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: "-100px", amount: 0.3 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-7xl mx-auto px-6"
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 md:px-6"
       >
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: Visual */}
-          <div className="relative">
-            <motion.div
-              className="relative"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.3 }}
-            >
-              <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl p-12 overflow-hidden">
-                <div className="grid grid-cols-4 gap-3">
-                  {[...Array(16)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="aspect-square bg-gray-300 rounded-lg"
-                      initial={{ opacity: 0.3 }}
-                      animate={{ opacity: [0.3, 0.6, 0.3] }}
-                      transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
-                    />
-                  ))}
-                </div>
-                <motion.div
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
-                  animate={{ rotate: [-5, 5, -5] }}
-                  transition={{ duration: 3, repeat: Infinity }}
-                >
-                  <div className="px-6 py-3 bg-red-500 text-white font-bold rounded-full shadow-2xl border-4 border-white text-lg">
-                    NO SOLAR ACCESS
-                  </div>
-                </motion.div>
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="relative order-2 md:order-1"
+          >
+            <div className="relative bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl md:rounded-3xl p-8 md:p-12 overflow-hidden">
+              <div className="grid grid-cols-4 gap-2 md:gap-3">
+                {[...Array(16)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="aspect-square bg-gray-300 rounded-lg"
+                    initial={{ opacity: 0.3 }}
+                    animate={{ opacity: [0.3, 0.6, 0.3] }}
+                    transition={{ duration: 2, repeat: Infinity, delay: i * 0.1 }}
+                  />
+                ))}
               </div>
-            </motion.div>
-          </div>
+              <motion.div
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+                animate={{ rotate: [-5, 5, -5] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                <div className="px-4 md:px-6 py-2 md:py-3 bg-red-500 text-white font-bold rounded-full shadow-2xl border-2 md:border-4 border-white text-sm md:text-lg whitespace-nowrap">
+                  NO SOLAR ACCESS
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
 
           {/* Right: Text */}
-          <div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="inline-block mb-4 px-4 py-2 bg-gray-100 rounded-full">
-                <span className="text-sm font-semibold text-gray-600 uppercase tracking-wider">The Problem</span>
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="order-1 md:order-2"
+          >
+            <div className="inline-block mb-4 px-4 py-2 bg-gray-100 rounded-full">
+              <span className="text-xs md:text-sm font-semibold text-gray-600 uppercase tracking-wider">The Problem</span>
+            </div>
+            <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+              Locked out of
+              <br />
+              <span className="text-gray-400">solar savings</span>
+            </h3>
+            <div className="space-y-3 md:space-y-4 text-base md:text-xl text-gray-600">
+              <div className="flex items-start gap-3">
+                <X className="w-5 h-5 md:w-6 md:h-6 text-red-500 flex-shrink-0 mt-1" />
+                <span>No rooftop access in your apartment</span>
               </div>
-              <h3 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Locked out of
-                <br />
-                <span className="text-gray-400">solar savings</span>
-              </h3>
-              <div className="space-y-4 text-xl text-gray-600">
-                <div className="flex items-start gap-3">
-                  <X className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
-                  <span>No rooftop access in your apartment</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <X className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
-                  <span>Can&apos;t install panels as a renter</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <X className="w-6 h-6 text-red-500 flex-shrink-0 mt-1" />
-                  <span>Miss out on 70% savings</span>
-                </div>
+              <div className="flex items-start gap-3">
+                <X className="w-5 h-5 md:w-6 md:h-6 text-red-500 flex-shrink-0 mt-1" />
+                <span>Can&apos;t install panels as a renter</span>
               </div>
-            </motion.div>
-          </div>
+              <div className="flex items-start gap-3">
+                <X className="w-5 h-5 md:w-6 md:h-6 text-red-500 flex-shrink-0 mt-1" />
+                <span>Miss out on 70% savings</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
       </motion.div>
 
       {/* Scene 2: The Frustration */}
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: "-100px", amount: 0.3 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-7xl mx-auto px-6"
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 md:px-6"
       >
-        <div className="grid md:grid-cols-2 gap-12 items-center">
+        <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Left: Text */}
-          <div className="order-2 md:order-1">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.2 }}
-            >
-              <div className="inline-block mb-4 px-4 py-2 bg-red-50 rounded-full">
-                <span className="text-sm font-semibold text-red-600 uppercase tracking-wider">The Cost</span>
-              </div>
-              <h3 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Your bills keep
-                <br />
-                <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
-                  climbing higher
-                </span>
-              </h3>
-              <div className="space-y-6">
-                <p className="text-xl text-gray-600 leading-relaxed">
-                  Every year, the same story. Your electricity bill arrives, and it&apos;s higher than last time.
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="order-1 md:order-1"
+          >
+            <div className="inline-block mb-4 px-4 py-2 bg-red-50 rounded-full">
+              <span className="text-xs md:text-sm font-semibold text-red-600 uppercase tracking-wider">The Cost</span>
+            </div>
+            <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight">
+              Your bills keep
+              <br />
+              <span className="bg-gradient-to-r from-red-600 to-orange-600 bg-clip-text text-transparent">
+                climbing higher
+              </span>
+            </h3>
+            <div className="space-y-4 md:space-y-6">
+              <p className="text-base md:text-xl text-gray-600 leading-relaxed">
+                Every year, the same story. Your electricity bill arrives, and it&apos;s higher than last time.
+              </p>
+              <div className="p-4 md:p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border-2 border-red-200">
+                <p className="text-lg md:text-2xl font-bold text-red-900 mb-2">
+                  Meanwhile, solar owners save ₹2,000-3,000/month
                 </p>
-                <div className="p-6 bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl border-2 border-red-200">
-                  <p className="text-2xl font-bold text-red-900 mb-2">
-                    Meanwhile, solar owners save ₹2,000-3,000/month
-                  </p>
-                  <p className="text-gray-700">
-                    It doesn&apos;t seem fair, does it?
-                  </p>
-                </div>
+                <p className="text-sm md:text-base text-gray-700">
+                  It doesn&apos;t seem fair, does it?
+                </p>
               </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
 
           {/* Right: Visual - Animated growing bills */}
-          <div className="relative order-1 md:order-2">
-            <div className="relative bg-gradient-to-br from-red-50 to-orange-50 rounded-3xl p-12 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative order-2 md:order-2"
+          >
+            <div className="relative bg-gradient-to-br from-red-50 to-orange-50 rounded-2xl md:rounded-3xl p-6 md:p-12 overflow-hidden">
               <div className="absolute inset-0 opacity-10">
                 <div className="absolute inset-0" style={{
                   backgroundImage: 'radial-gradient(circle, #ef4444 1px, transparent 1px)',
@@ -481,42 +490,37 @@ const NarrativeHook: React.FC = () => {
                 }} />
               </div>
 
-              <div className="relative space-y-4">
+              <div className="relative space-y-3 md:space-y-4">
                 {[
-                  { month: 'Apr', amount: 2800 ,year:2019 },
-                  { month: 'Apr', amount: 3100, year:2021 },
-                  { month: 'Apr', amount: 3500, year:2023 },
-                  { month: 'Apr', amount: 3800, year:2025 },
+                  { month: 'Apr', amount: 2800, year: 2019 },
+                  { month: 'Apr', amount: 3100, year: 2021 },
+                  { month: 'Apr', amount: 3500, year: 2023 },
+                  { month: 'Apr', amount: 3800, year: 2025 },
                 ].map((bill, i) => (
                   <motion.div
                     key={i}
-                    className="bg-white rounded-xl p-6 shadow-lg border-2 border-red-200"
-                    initial={{ x: -100, opacity: 0 }}
-                    whileInView={{ x: 0, opacity: 1 }}
-                    viewport={{ once: false }}
-                    transition={{ delay: i * 0.2 }}
-                    whileHover={{ scale: 1.02 }}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.4 + i * 0.1, duration: 0.4 }}
+                    className="bg-white rounded-xl p-4 md:p-6 shadow-lg border-2 border-red-200"
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <div className="text-sm text-gray-500 font-medium">{bill.month} {bill.year}</div>
+                        <div className="text-xs md:text-sm text-gray-500 font-medium">{bill.month} {bill.year}</div>
                         <div className="text-xs text-gray-400 mt-1">Electricity Bill</div>
                       </div>
-                      <motion.div
-                        className="text-3xl font-bold text-red-600"
-                        animate={{ scale: [1, 1.1, 1] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
-                      >
+                      <div className="text-2xl md:text-3xl font-bold text-red-600">
                         ₹{bill.amount.toLocaleString()}
-                      </motion.div>
+                      </div>
                     </div>
                     <div className="mt-3 h-2 bg-gray-100 rounded-full overflow-hidden">
                       <motion.div
-                        className="h-full bg-gradient-to-r from-red-400 to-red-600"
                         initial={{ width: 0 }}
                         whileInView={{ width: `${(bill.amount / 4000) * 100}%` }}
-                        viewport={{ once: false }}
-                        transition={{ duration: 1, delay: i * 0.2 }}
+                        viewport={{ once: true }}
+                        transition={{ delay: 0.5 + i * 0.1, duration: 0.8, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-red-400 to-red-600"
                       />
                     </div>
                   </motion.div>
@@ -528,25 +532,25 @@ const NarrativeHook: React.FC = () => {
                 animate={{ y: [-10, 10, -10] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                <TrendingUp className="w-16 h-16 text-red-500" strokeWidth={3} />
+                <TrendingUp className="w-12 h-12 md:w-16 md:h-16 text-red-500" strokeWidth={3} />
               </motion.div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </motion.div>
 
       {/* Scene 3: The Solution */}
       <motion.div
-        initial={{ opacity: 0, y: 60 }}
+        initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, margin: "-100px", amount: 0.3 }}
-        transition={{ duration: 0.8 }}
-        className="max-w-7xl mx-auto px-6"
+        viewport={{ once: true, margin: "-50px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-7xl mx-auto px-4 md:px-6"
       >
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-3xl overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-teal-500 to-cyan-600 rounded-2xl md:rounded-3xl overflow-hidden">
             {/* Fixed particles — using pre-computed positions, no Math.random() */}
-            <div className="absolute inset-0">
+            <div className="absolute inset-0 hidden md:block">
               {PARTICLE_POSITIONS.map((pos, i) => (
                 <motion.div
                   key={i}
@@ -559,36 +563,43 @@ const NarrativeHook: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative p-12 md:p-16 text-center text-white">
+          <div className="relative p-8 md:p-12 lg:p-16 text-center text-white">
             <motion.div
-              className="inline-block mb-8"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="inline-block mb-6 md:mb-8"
             >
-              <div className="relative">
-                <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl" />
-                <div className="relative w-24 h-24 bg-white rounded-full flex items-center justify-center">
-                  <Sun className="w-16 h-16 text-teal-600" />
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              >
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/30 rounded-full blur-2xl" />
+                  <div className="relative w-16 h-16 md:w-24 md:h-24 bg-white rounded-full flex items-center justify-center">
+                    <Sun className="w-10 h-10 md:w-16 md:h-16 text-teal-600" />
+                  </div>
                 </div>
-              </div>
+              </motion.div>
             </motion.div>
 
             <motion.h3
-              className="text-6xl md:text-7xl font-bold mb-8 leading-tight"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.3 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 md:mb-8 leading-tight"
             >
               Until now.
             </motion.h3>
 
             <motion.p
-              className="text-2xl md:text-3xl mb-8 max-w-3xl mx-auto leading-relaxed font-medium"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.5 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl mb-6 md:mb-8 max-w-3xl mx-auto leading-relaxed font-medium"
             >
               Own solar panels on <strong>real farms</strong>.
               <br />
@@ -598,34 +609,37 @@ const NarrativeHook: React.FC = () => {
             </motion.p>
 
             <motion.div
-              className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-8"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: false }}
-              transition={{ delay: 0.7 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 md:gap-6 justify-center items-center mb-6 md:mb-8"
             >
-              <div className="bg-white/20 backdrop-blur-lg rounded-2xl px-8 py-4 border border-white/30">
-                <div className="text-sm font-semibold opacity-90 mb-1">This Month Generated</div>
-                <CountingNumber end={156} className="text-4xl font-bold" suffix=" kWh" />
+              <div className="bg-white/20 backdrop-blur-lg rounded-2xl px-6 md:px-8 py-3 md:py-4 border border-white/30 w-full sm:w-auto">
+                <div className="text-xs md:text-sm font-semibold opacity-90 mb-1">This Month Generated</div>
+                <CountingNumber end={156} className="text-2xl md:text-4xl font-bold" suffix=" kWh" />
               </div>
 
               <div className="hidden sm:block w-px h-12 bg-white/30" />
 
-              <div className="bg-white/20 backdrop-blur-lg rounded-2xl px-8 py-4 border border-white/30">
-                <div className="text-sm font-semibold opacity-90 mb-1">You Earned</div>
-                <CountingNumber end={2840} className="text-4xl font-bold" prefix="₹" />
+              <div className="bg-white/20 backdrop-blur-lg rounded-2xl px-6 md:px-8 py-3 md:py-4 border border-white/30 w-full sm:w-auto">
+                <div className="text-xs md:text-sm font-semibold opacity-90 mb-1">You Earned</div>
+                <CountingNumber end={2840} className="text-2xl md:text-4xl font-bold" prefix="₹" />
               </div>
             </motion.div>
 
             <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.6 }}
               animate={{ y: [0, 15, 0] }}
-              transition={{ duration: 1.5, repeat: Infinity }}
               className="inline-block"
             >
-              <div className="px-6 py-3 bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
-                <div className="flex items-center gap-2 text-sm font-semibold">
+              <div className="px-4 md:px-6 py-2 md:py-3 bg-white/20 backdrop-blur-sm rounded-full border border-white/30">
+                <div className="flex items-center gap-2 text-xs md:text-sm font-semibold">
                   <span>See it in action</span>
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <svg className="w-4 h-4 md:w-5 md:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
                   </svg>
                 </div>
